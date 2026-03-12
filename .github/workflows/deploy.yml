@@ -29,19 +29,30 @@ jobs:
           node-version: '20'
 
       - name: Fetch wash trading intelligence
-        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.RAPIDAPI_KEY != ''
-        run: node scripts/api-call.js
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          if [ -z "$RAPIDAPI_KEY" ]; then
+            echo "⚠️  RAPIDAPI_KEY not set — skipping data fetch, using existing data/"
+          else
+            node scripts/api-call.js
+          fi
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
 
       - name: Generate AI intelligence brief
-        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.RAPIDAPI_KEY != ''
-        run: node scripts/generate-brief.js
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          if [ -z "$RAPIDAPI_KEY" ]; then
+            echo "⚠️  RAPIDAPI_KEY not set — skipping AI brief generation"
+          else
+            node scripts/generate-brief.js
+          fi
         env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit data updates
-        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.RAPIDAPI_KEY != ''
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "WashWatch Bot 🌰"
