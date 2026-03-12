@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WashWatch — Crypto Wash Trading Intelligence 🌰</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --accent: #f78166;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --orange: #ffa657;
+      --blue: #58a6ff;
+      --wash: #f85149;
+      --manip: #ffa657;
+      --fake: #d29922;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header h1 span { color: var(--accent); }
+    .tagline { color: var(--muted); font-size: 13px; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .risk-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(248,81,73,0.15);
+      border: 1px solid var(--red);
+      color: var(--red);
+    }
+    .last-updated { color: var(--muted); font-size: 12px; }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 20px;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .stat-card .val { font-size: 28px; font-weight: 700; }
+    .stat-card .lbl { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .stat-card.wash .val { color: var(--wash); }
+    .stat-card.manip .val { color: var(--manip); }
+    .stat-card.fake .val { color: var(--fake); }
+    .stat-card.total .val { color: var(--blue); }
+
+    /* Main layout */
+    .main { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Brief section */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .brief-content {
+      padding: 16px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      font-family: inherit;
+    }
+
+    /* Events list */
+    .events-list { list-style: none; }
+    .event-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .event-item:last-child { border-bottom: none; }
+    .event-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .badge-wash_trading { background: rgba(248,81,73,0.15); color: var(--wash); border: 1px solid rgba(248,81,73,0.4); }
+    .badge-market_manipulation { background: rgba(255,166,87,0.15); color: var(--orange); border: 1px solid rgba(255,166,87,0.4); }
+    .badge-fake_volume { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.4); }
+    .event-body { flex: 1; min-width: 0; }
+    .event-summary { color: var(--text); margin-bottom: 6px; }
+    .event-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .event-time { color: var(--muted); font-size: 11px; }
+    .event-sources { display: flex; gap: 6px; flex-wrap: wrap; }
+    .event-sources a {
+      font-size: 11px;
+      padding: 1px 6px;
+      background: rgba(88,166,255,0.1);
+      border-radius: 4px;
+      color: var(--blue);
+      border: 1px solid rgba(88,166,255,0.2);
+    }
+
+    /* Filter tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .filter-tab:hover { color: var(--text); border-color: var(--muted); }
+    .filter-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* Loading / error state */
+    .loading { padding: 40px; text-align: center; color: var(--muted); }
+    .error-msg { padding: 16px; color: var(--red); background: rgba(248,81,73,0.1); border-radius: 6px; margin: 12px 16px; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px 24px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--muted); }
+    .footer a:hover { color: var(--blue); }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header { padding: 12px 16px; }
+      .stats { padding: 12px 16px; }
+      .main { padding: 0 16px 16px; }
+      .stat-card .val { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div>
+      <h1>🌰 Wash<span>Watch</span></h1>
+      <div class="tagline">Crypto Wash Trading &amp; Market Manipulation Intelligence</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="risk-badge" id="riskBadge">⏳ Loading...</div>
+    <div class="last-updated" id="lastUpdated">Fetching data...</div>
+  </div>
+</header>
+
+<div class="stats" id="statsRow">
+  <div class="stat-card total"><div class="val" id="statTotal">—</div><div class="lbl">Total Events</div></div>
+  <div class="stat-card wash"><div class="val" id="statWash">—</div><div class="lbl">Wash Trading</div></div>
+  <div class="stat-card manip"><div class="val" id="statManip">—</div><div class="lbl">Market Manipulation</div></div>
+  <div class="stat-card fake"><div class="val" id="statFake">—</div><div class="lbl">Fake Volume</div></div>
+</div>
+
+<main class="main">
+
+  <!-- AI Brief -->
+  <div class="section">
+    <div class="section-header">🤖 Weekly AI Intelligence Brief</div>
+    <pre class="brief-content" id="briefContent">Loading intelligence brief...</pre>
+  </div>
+
+  <!-- Events -->
+  <div class="section">
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="wash_trading">🔴 Wash Trading</button>
+      <button class="filter-tab" data-filter="market_manipulation">🟠 Market Manipulation</button>
+      <button class="filter-tab" data-filter="fake_volume">🟡 Fake Volume</button>
+    </div>
+    <div class="section-header">📡 Intelligence Feed</div>
+    <ul class="events-list" id="eventsList">
+      <li class="loading">Loading events...</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer class="footer">
+  Powered by <a href="https://dn.institute" target="_blank">dn-institute</a> ·
+  Data via <a href="https://rapidapi.com/CPWatch/api/cpw-tracker" target="_blank">CPW Tracker API</a> ·
+  AI by <a href="https://github.com/marketplace/models" target="_blank">GitHub Models</a> ·
+  🌰🌰🌰
+</footer>
+
+<script>
+  let allEvents = []
+  let activeFilter = 'all'
+
+  // Format date
+  function fmt(iso) {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  }
+
+  // Extract sources from eventSummary
+  function parseSources(summary) {
+    const lines = summary.split('\n')
+    const srcStart = lines.findIndex(l => l.trim().startsWith('Sources:'))
+    if (srcStart < 0) return { text: summary, sources: [] }
+    const text = lines.slice(0, srcStart).join('\n').trim()
+    const sources = lines.slice(srcStart + 1)
+      .map(l => l.replace(/^[\s\-*]+/, '').trim())
+      .filter(l => l.startsWith('http'))
+    return { text, sources }
+  }
+
+  // Risk level from brief text
+  function extractRisk(briefText) {
+    if (!briefText) return null
+    if (briefText.includes('🔴 HIGH')) return { emoji: '🔴', label: 'HIGH', cls: 'high' }
+    if (briefText.includes('🟡 MEDIUM')) return { emoji: '🟡', label: 'MEDIUM', cls: 'medium' }
+    if (briefText.includes('🟢 LOW')) return { emoji: '🟢', label: 'LOW', cls: 'low' }
+    return null
+  }
+
+  function renderEvents(events) {
+    const list = document.getElementById('eventsList')
+    if (!events.length) {
+      list.innerHTML = '<li class="loading">No events found for this filter.</li>'
+      return
+    }
+    list.innerHTML = events.map(e => {
+      const { text, sources } = parseSources(e.eventSummary || '')
+      const label = e.topicLabel || e.topic || 'unknown'
+      const srcLinks = sources.map(s => {
+        const domain = (() => { try { return new URL(s).hostname.replace('www.','') } catch(_) { return s.slice(0,30) } })()
+        return `<a href="${s}" target="_blank" rel="noopener">${domain}</a>`
+      }).join('')
+      return `<li class="event-item">
+        <span class="event-badge badge-${label}">${label.replace(/_/g,' ')}</span>
+        <div class="event-body">
+          <div class="event-summary">${text}</div>
+          <div class="event-meta">
+            <span class="event-time">${fmt(e.timestamp)}</span>
+            ${srcLinks ? `<div class="event-sources">${srcLinks}</div>` : ''}
+          </div>
+        </div>
+      </li>`
+    }).join('')
+  }
+
+  function applyFilter(filter) {
+    activeFilter = filter
+    document.querySelectorAll('.filter-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.filter === filter)
+    })
+    const filtered = filter === 'all' ? allEvents : allEvents.filter(e => (e.topicLabel || e.topic) === filter)
+    renderEvents(filtered)
+  }
+
+  // Filter tab clicks
+  document.getElementById('filterTabs').addEventListener('click', e => {
+    if (e.target.classList.contains('filter-tab')) {
+      applyFilter(e.target.dataset.filter)
+    }
+  })
+
+  async function loadData() {
+    try {
+      // Load events
+      const evRes = await fetch('data/events.json')
+      if (!evRes.ok) throw new Error('Failed to load events.json')
+      allEvents = await evRes.json()
+
+      // Sort by timestamp desc
+      allEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+      // Stats
+      document.getElementById('statTotal').textContent = allEvents.length
+      document.getElementById('statWash').textContent = allEvents.filter(e => (e.topicLabel||e.topic) === 'wash_trading').length
+      document.getElementById('statManip').textContent = allEvents.filter(e => (e.topicLabel||e.topic) === 'market_manipulation').length
+      document.getElementById('statFake').textContent = allEvents.filter(e => (e.topicLabel||e.topic) === 'fake_volume').length
+
+      applyFilter(activeFilter)
+    } catch (err) {
+      document.getElementById('eventsList').innerHTML = `<li><div class="error-msg">⚠️ ${err.message}</div></li>`
+    }
+
+    try {
+      // Load brief
+      const brRes = await fetch('data/brief.json')
+      if (!brRes.ok) throw new Error('Failed to load brief.json')
+      const brief = await brRes.json()
+
+      document.getElementById('briefContent').textContent = brief.brief || 'No brief available.'
+
+      const risk = extractRisk(brief.brief || '')
+      const badge = document.getElementById('riskBadge')
+      if (risk) {
+        badge.textContent = `${risk.emoji} Risk: ${risk.label}`
+        if (risk.cls === 'high') { badge.style.color = 'var(--red)'; badge.style.borderColor = 'var(--red)'; badge.style.background = 'rgba(248,81,73,0.15)' }
+        else if (risk.cls === 'medium') { badge.style.color = 'var(--yellow)'; badge.style.borderColor = 'var(--yellow)'; badge.style.background = 'rgba(210,153,34,0.15)' }
+        else { badge.style.color = 'var(--green)'; badge.style.borderColor = 'var(--green)'; badge.style.background = 'rgba(63,185,80,0.15)' }
+      }
+
+      const genAt = brief.generatedAt ? fmt(brief.generatedAt) : '—'
+      document.getElementById('lastUpdated').textContent = `Updated: ${genAt} · ${brief.eventsAnalysed || 0} events analysed`
+    } catch (err) {
+      document.getElementById('briefContent').textContent = '⚠️ Could not load intelligence brief: ' + err.message
+    }
+  }
+
+  loadData()
+</script>
+</body>
+</html>

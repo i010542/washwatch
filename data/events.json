@@ -1,26 +1,37 @@
 [
   {
-    "timestamp": "2026-03-07T20:09:36.000Z",
-    "entities": "financial custodians",
-    "topic": "cyberattack",
-    "eventSummary": "The Qilin Ransomware group has listed Kuzco Lighting and Artemedica as its latest victims on its dark web leak portal.\nSources:\n- https://bsky.app/profile/falconfeedsio.bsky.social/post/3mgim7l6tj22l"
+    "timestamp": "2026-03-10T09:00:00.000Z",
+    "entities": "cryptocurrency exchanges",
+    "topic": "wash trading",
+    "topicLabel": "wash_trading",
+    "eventSummary": "Research by Solidus Labs identifies 12 crypto exchanges with self-trade ratios exceeding 80% in BTC/USDT pairs during Q1 2026. The inflated volume figures are being used to attract institutional investors under false pretenses.\nSources:\n- https://soliduslabs.com/reports/wash-trading-2026\n- https://twitter.com/soliduslabs/status/sample1"
   },
   {
-    "timestamp": "2026-03-07T18:00:12.000Z",
-    "entities": "financial custodians",
-    "topic": "cyberattack",
-    "eventSummary": "A new ClickFix malware campaign is targeting users by tricking them into executing malicious PowerShell commands via Windows Terminal to deploy Lumma Stealer, a credential-harvesting malware.\nSources:\n- https://twitter.com/1665789406026842112/status/2030342767491129671"
+    "timestamp": "2026-03-09T14:30:00.000Z",
+    "entities": "cryptocurrency exchanges",
+    "topic": "market manipulation",
+    "topicLabel": "market_manipulation",
+    "eventSummary": "Coordinated pump-and-dump operation detected targeting low-cap altcoins on three major DEXes. On-chain analysis reveals a cluster of 47 wallets executing layering strategies, generating $4.2M in artificial trading volume before dumping.\nSources:\n- https://twitter.com/zachxbt/status/sample2\n- https://dune.com/sample-dashboard"
   },
   {
-    "timestamp": "2026-03-07T16:51:11.000Z",
-    "entities": "financial custodians",
-    "topic": "cyberattack",
-    "eventSummary": "An autonomous open-source AI tool named CyberStrikeAI has reportedly breached over 600 Fortinet firewalls across 55 countries by automating the entire attack chain including reconnaissance and exploitation.\nSources:\n- https://twitter.com/1945909917031731200/status/2030325397850886403"
+    "timestamp": "2026-03-08T11:15:00.000Z",
+    "entities": "cryptocurrency exchanges",
+    "topic": "fake volume",
+    "topicLabel": "fake_volume",
+    "eventSummary": "Independent audit of Tier-2 exchanges reveals that reported 24h trading volume on CoinGecko is inflated by an average of 340%. Wash trading bots execute round-trip trades at near-zero cost to boost exchange rankings.\nSources:\n- https://coingecko.com/reports/market-integrity-2026\n- https://bitcointalk.org/sample-thread"
   },
   {
-    "timestamp": "2026-03-07T14:20:38.000Z",
-    "entities": "financial custodians",
-    "topic": "cyberattack",
-    "eventSummary": "Iran-linked hackers are targeting IP cameras across Israel and Gulf states to gather military intelligence and conduct shadow cyber operations amid reports of escalating regional conflict and missile attacks.\nSources:\n- https://twitter.com/128484298/status/2030287510262174021\n- https://twitter.com/128484298/status/2030297929378943394\n- https://twitter.com/4592195181/status/2030449535156191343"
+    "timestamp": "2026-03-07T08:45:00.000Z",
+    "entities": "cryptocurrency exchanges",
+    "topic": "wash trading",
+    "topicLabel": "wash_trading",
+    "eventSummary": "SEC enforcement action against Exchange XYZ reveals systematic wash trading program operated between 2024-2026, artificially boosting reported volume by $1.8B across 200+ trading pairs. Settlement reached for $48M.\nSources:\n- https://sec.gov/litigation/sample-action\n- https://twitter.com/sec_news/status/sample3"
+  },
+  {
+    "timestamp": "2026-03-06T16:00:00.000Z",
+    "entities": "cryptocurrency exchanges",
+    "topic": "market manipulation",
+    "topicLabel": "market_manipulation",
+    "eventSummary": "Academic paper from Cornell Tech documents spoofing patterns across 5 major crypto exchanges, showing large order placement and cancellation within milliseconds creates false price discovery. Pattern identified in 23% of daily BTC order flow.\nSources:\n- https://arxiv.org/abs/sample-paper\n- https://twitter.com/cornelltech/status/sample4"
   }
 ]
